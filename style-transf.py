@@ -91,7 +91,7 @@ style = load_image(options.style, options.style_size)
 
 # compute layer activations for content
 g = tf.Graph()
-with g.as_default(), g.device('/cpu:0'), tf.Session() as sess:
+with g.as_default(), g.device('/gpu:0'), tf.Session() as sess:
     content_pre = np.array([network_model.preprocess(content)])
 
     image = tf.placeholder('float', shape=content_pre.shape)
@@ -100,7 +100,7 @@ with g.as_default(), g.device('/cpu:0'), tf.Session() as sess:
 
 # compute layer activations for style
 g = tf.Graph()
-with g.as_default(), g.device('/cpu:0'), tf.Session() as sess:
+with g.as_default(), g.device('/gpu:0'), tf.Session() as sess:
     style_pre = np.array([network_model.preprocess(style)])
     image = tf.placeholder('float', shape=style_pre.shape)
     model = network_model.get_model(image)
@@ -128,7 +128,7 @@ with g.as_default(), g.device('/gpu:0'), tf.Session() as sess:
 
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(total_loss)
 
-    sess.run(tf.initialize_all_variables())
+    sess.run(tf.global_variables_initializer())
     min_loss = float("inf")
     best = None
     for i in range(options.iter):

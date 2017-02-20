@@ -6,10 +6,10 @@ def content_loss(cont_out, target_out, layer, content_weight):
         # content loss is just the mean square error between the outputs of a given layer
         # in the content image and the target image
     '''
-    cont_loss = tf.reduce_sum(tf.square(tf.sub(target_out[layer], cont_out)))
+    cont_loss = tf.reduce_sum(tf.square(tf.subtract(target_out[layer], cont_out)))
 
-    # multiply the loss by it's weight
-    cont_loss = tf.mul(cont_loss, content_weight, name="cont_loss")
+    # multiply the loss by its weight
+    cont_loss = tf.multiply(cont_loss, content_weight, name="cont_loss")
     #tf.add_to_collection('losses', cont_loss)
 
     return cont_loss
@@ -40,10 +40,10 @@ def style_loss(style_out, target_out, layers, style_weight_layer):
         style_gram = gram_matrix(style_out[layer])
         target_gram = gram_matrix(target_out[layer])
 
-        st_loss = tf.mul(tf.reduce_sum(tf.square(tf.sub(target_gram, style_gram))), 1./((N**2) * (M**2)))
+        st_loss = tf.multiply(tf.reduce_sum(tf.square(tf.subtract(target_gram, style_gram))), 1./((N**2) * (M**2)))
 
         # multiply the loss by it's weight
-        st_loss = tf.mul(st_loss, style_weight_layer, name='style_loss')
+        st_loss = tf.multiply(st_loss, style_weight_layer, name='style_loss')
 
         #tf.add_to_collection('losses', st_loss)
         return st_loss
@@ -61,7 +61,7 @@ def total_var_loss(generated, tv_weight):
     '''
     batch, width, height, channels = get_shape(generated)
 
-    width_var = tf.nn.l2_loss(tf.sub(generated[:,:width-1,:,:], generated[:,1:,:,:]))
-    height_var = tf.nn.l2_loss(tf.sub(generated[:,:,:height-1,:], generated[:,:,1:,:]))
+    width_var = tf.nn.l2_loss(tf.subtract(generated[:,:width-1,:,:], generated[:,1:,:,:]))
+    height_var = tf.nn.l2_loss(tf.subtract(generated[:,:,:height-1,:], generated[:,:,1:,:]))
 
     return tv_weight*tf.add(width_var, height_var)
